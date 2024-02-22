@@ -4,24 +4,28 @@ namespace Data;
 
 trait DataAccessTrait
 {
-    private $data = [];
-
-    public function __construct(array $data = [])
-    {
-        $this->data = $data;
-    }
-
+    const KEY_DELIMITER = '.';
+    
     /**
-     * Undocumented function
+     * Search from array given in argument No.1 with key given in argument No.2
      *
-     * @param string|int $key
+     * @param array $data
+     * @param string|int|null $key
      * @return mixed
      */
-    public function get($key)
+    protected function searchFromData(array $data, $key = null)
     {
-        if (!array_key_exists($key, $this->data)) {
-            throw new \Exception('Key not found');
+        // $key can be sparated by dot
+        if (null !== $key) {
+            $keys = explode(self::KEY_DELIMITER, $key);
+            foreach ($keys as $k) {
+                if (array_key_exists($k, $data)) {
+                    $data = $data[$k];
+                } else {
+                    return null;
+                }
+            }
         }
-        return $this->data[$key];
+        return $data;
     }
 }
