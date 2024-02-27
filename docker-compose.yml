@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  web-app:
+    #image: nginx:latest
+    build: ./docker/web
+    restart: always
+    volumes:
+      - ./html:/var/www/html
+    environment:
+      VIRTUAL_HOST: 'seg-server.local'
+    ports:
+      - 8091:80
+    extra_hosts:
+      - host.docker.internal:host-gateway
+  php-app:
+    build: ./docker/php
+    restart: always
+    volumes:
+      - ./html:/var/www/html
+    extra_hosts:
+      - host.docker.internal:host-gateway
+
