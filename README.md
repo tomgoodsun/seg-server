@@ -47,7 +47,7 @@ English
 
 ### `user_game`
 
-|Name|Data Type|NULLABLE|
+|Name|Data Type|Options|
 |:---|:---|:---|
 |`id`|`BIGINT`|AUTO INCREMENT|
 |`user_id`|`BIGINT`||
@@ -58,7 +58,7 @@ English
 
 ### `score`
 
-|Name|Data Type|NULLABLE|
+|Name|Data Type|Options|
 |:---|:---|:---|
 |`user_game_id`|`BIGINT`||
 |`score`|`BIGINT`||
@@ -67,7 +67,7 @@ English
 
 ### `score_history`
 
-|Name|Data Type|NULLABLE|
+|Name|Data Type|Options|
 |:---|:---|:---|
 |`id`|`BIGINT`|AUTO INCREMENT|
 |`user_game_id`|`BIGINT`||
@@ -147,7 +147,7 @@ English
 
 ### `user_game`
 
-|Name|Data Type|NULLABLE|
+|Name|Data Type|Options|
 |:---|:---|:---|
 |`id`|`BIGINT`|AUTO INCREMENT|
 |`user_id`|`BIGINT`||
@@ -158,7 +158,7 @@ English
 
 ### `score`
 
-|Name|Data Type|NULLABLE|
+|Name|Data Type|Options|
 |:---|:---|:---|
 |`user_game_id`|`BIGINT`||
 |`score`|`BIGINT`||
@@ -167,7 +167,7 @@ English
 
 ### `score_history`
 
-|Name|Data Type|NULLABLE|
+|Name|Data Type|Options|
 |:---|:---|:---|
 |`id`|`BIGINT`|AUTO INCREMENT|
 |`user_game_id`|`BIGINT`||
