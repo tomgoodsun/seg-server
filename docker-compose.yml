@@ -18,6 +18,7 @@ services:
     restart: always
     volumes:
       - ./html:/var/www/html
+      - ./src:/var/www/src
     extra_hosts:
       - host.docker.internal:host-gateway
 

@@ -1,7 +1,7 @@
 <?php
-namespace App;
+namespace App\Kernel;
 
-use Data\DataAccessTrait;
+use App\Data\DataAccessTrait;
 
 class Config
 {

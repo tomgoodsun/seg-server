@@ -1,5 +1,5 @@
 <?php
-namespace Data;
+namespace App\Data;
 
 class SuperGlobalVariable
 {
@@ -58,7 +58,7 @@ class SuperGlobalVariable
     {
         return $this->searchFromData($this->post, $key);
     }
-    
+
     public function files($key = null)
     {
         return $this->searchFromData($this->files, $key);

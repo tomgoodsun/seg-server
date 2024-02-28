@@ -1,5 +1,5 @@
 <?php
-namespace App;
+namespace App\Kernel;
 
 abstract class AbstractApi
 {

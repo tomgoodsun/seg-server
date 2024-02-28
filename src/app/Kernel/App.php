@@ -1,5 +1,5 @@
 <?php
-namespace App;
+namespace App\Kernel;
 
 class App
 {
@@ -33,4 +33,4 @@ class App
             throw $e;
         }
     }
-}   
+}

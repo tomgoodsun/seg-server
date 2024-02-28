@@ -1,11 +1,11 @@
 <?php
 
-namespace Data;
+namespace App\Data;
 
 trait DataAccessTrait
 {
     const KEY_DELIMITER = '.';
-    
+
     /**
      * Search from array given in argument No.1 with key given in argument No.2
      *
