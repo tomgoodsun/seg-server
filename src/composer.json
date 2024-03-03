@@ -10,6 +10,7 @@
     }
   },
   "require": {
+    "slim/psr7": "*",
     "symfony/var-dumper": "*"
   }
 }
