@@ -1,6 +1,6 @@
 dev01
 <?php
-require_once __DIR__ . '/../src/vendor/autoload.php';
+require_once __DIR__ . '/../src/includes/bootstrap.php';
 
 use App\Kernel\App;
 

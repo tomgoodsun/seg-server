@@ -47,6 +47,13 @@ class Route
     private $name;
 
     /**
+     * Controller object
+     *
+     * @var Controller
+     */
+    private $controller;
+
+    /**
      * Route constructor
      *
      * @param string $path
@@ -115,6 +122,17 @@ class Route
         }
         $this->name = $name;
         return $this;
+    }
+
+    public function dispatch()
+    {
+        $handler = explode('@', $this->handler);
+        if (count($handler) !== 2) {
+            throw new \Exception("Invalid route handler '{$this->handler}'");
+        }
+        $controller = new $handler[0]($this->createRequest(), $this->createResponse());
+        $method = $handler[1];
+        return $controller->dispatch($method);
     }
 
     /**
@@ -234,9 +252,11 @@ class Route
     public static function findRoute(string $method, string $path): Route
     {
         if (!array_key_exists($method, static::$routes)) {
+            // TODO: 404 Exception
             throw new \Exception("Method '{$method}' not allowed");
         }
         if (!array_key_exists($path, static::$routes[$method])) {
+            // TODO: 404 Exception
             throw new \Exception("Route '{$path}' not found");
         }
         return static::$routes[$method][$path];

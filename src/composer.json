@@ -9,6 +9,9 @@
       "App\\": "app/"
     }
   },
+  "includes": [
+    "includes/*.php"
+  ],
   "require": {
     "slim/psr7": "*",
     "symfony/var-dumper": "*"
