@@ -1,6 +1,7 @@
 <?php
 namespace App\Http;
 
+use Slim\Psr7\Factory\StreamFactory;
 use Slim\Psr7\Headers;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
@@ -29,10 +30,12 @@ class Factory
     /**
      * Create default HTTP response object
      *
-     * @return Response
+     * @return ResponseInterface
      */
     public static function createDefaultResponse()
     {
-        return new Response();
+        $response = new Response();
+        $streamFactory = new StreamFactory();
+        return new DefaultResponse($response, $streamFactory);
     }
 }

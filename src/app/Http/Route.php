@@ -2,6 +2,8 @@
 
 namespace App\Http;
 
+use Psr\Http\Message\ResponseInterface;
+
 class Route
 {
     /**
@@ -124,12 +126,18 @@ class Route
         return $this;
     }
 
+    /**
+     * Dispatch route
+     *
+     * @return ResponseInterface
+     */
     public function dispatch()
     {
         $handler = explode('@', $this->handler);
         if (count($handler) !== 2) {
             throw new \Exception("Invalid route handler '{$this->handler}'");
         }
+        /** @var Controller $controller */
         $controller = new $handler[0]($this->createRequest(), $this->createResponse());
         $method = $handler[1];
         return $controller->dispatch($method);
@@ -148,7 +156,7 @@ class Route
     /**
      * Create response
      *
-     * @return Response
+     * @return ResponseInterface
      */
     public function createResponse()
     {
@@ -174,7 +182,10 @@ class Route
         }
         static::$routes[$method][$path] = new self($path, $method, $handler, $name);
         static::$routesByNames[$name] = static::$routes[$method][$path];
-        return static::$routes[$method][$path]->setName($name);
+        if (null !== $name) {
+            static::$routes[$method][$path]->setName($name);
+        }
+        return static::$routes[$method][$path];
     }
 
     /**
@@ -196,7 +207,7 @@ class Route
      * @param string $path
      * @param string $handler
      * @param string|null $name
-     * @return Request
+     * @return Route
      */
     public static function post(string $path, string $handler, string $name = null): Route
     {
@@ -209,7 +220,7 @@ class Route
      * @param string $path
      * @param string $handler
      * @param string|null $name
-     * @return Request
+     * @return Route
      */
     public static function put(string $path, string $handler, string $name = null): Route
     {
@@ -222,7 +233,7 @@ class Route
      * @param string $path
      * @param string $handler
      * @param string|null $name
-     * @return Request
+     * @return Route
      */
     public static function patch(string $path, string $handler, string $name = null): Route
     {
@@ -235,7 +246,7 @@ class Route
      * @param string $path
      * @param string $handler
      * @param string|null $name
-     * @return Request
+     * @return Route
      */
     public static function delete(string $path, string $handler, string $name = null): Route
     {
@@ -249,8 +260,9 @@ class Route
      * @param string $path
      * @return Route
      */
-    public static function findRoute(string $method, string $path): Route
+    public static function resolve(string $method, string $path): Route
     {
+        $method = strtolower($method);
         if (!array_key_exists($method, static::$routes)) {
             // TODO: 404 Exception
             throw new \Exception("Method '{$method}' not allowed");

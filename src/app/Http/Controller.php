@@ -2,15 +2,15 @@
 
 namespace App\Http;
 
-use Slim\Psr7\Request;
-use Slim\Psr7\Response;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 abstract class Controller
 {
-    private Request $request;
-    private Response $response;
+    private RequestInterface $request;
+    private ResponseInterface $response;
 
-    public function __construct(Request $request, Response $response)
+    public function __construct(RequestInterface $request, ResponseInterface $response)
     {
         $this->request = $request;
         $this->response = $response;
@@ -21,7 +21,7 @@ abstract class Controller
      *
      * @param string $action
      * @param array $params
-     * @return mixed
+     * @return mixed|ResponseInterface
      */
     public function dispatch(string $action, array $params = [])
     {
@@ -31,12 +31,12 @@ abstract class Controller
         return $ret;
     }
 
-    protected function before(Request $request, Response $response)
+    protected function before(RequestInterface $request, ResponseInterface $response)
     {
         // do nothing, override if needed
     }
 
-    protected function after(Request $request, Response $response)
+    protected function after(RequestInterface $request, ResponseInterface $response)
     {
         // do nothing, override if needed
     }
