@@ -1,5 +1,5 @@
 <?php
-namespace App\Kernel;
+namespace App\Core;
 
 use App\Data\DataAccessTrait;
 

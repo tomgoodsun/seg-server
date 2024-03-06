@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controller;
-use Slim\Psr7\Request;
-use Slim\Psr7\Response;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 class AdminController extends Controller
 {
-    public function index(Request $request, Response $response, $params = [])
+    public function index(RequestInterface $request, ResponseInterface $response, $params = [])
     {
         $response->getBody()->write('Hello, world!');
         return $response;

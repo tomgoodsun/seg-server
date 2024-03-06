@@ -1,7 +1,8 @@
 <?php
-namespace App\Kernel;
+namespace App\Core;
 
 use App\Http\Route;
+use App\Core\ResponseEmitter;
 use Psr\Http\Message\ResponseInterface;
 
 class App
@@ -39,9 +40,11 @@ class App
 
             /** @var ResponseInterface $response */
             $response = $route->dispatch();
-            echo $response;
+            $responseEmitter = new ResponseEmitter();
+            $responseEmitter->emit($response);
         } catch (\Exception $e) {
-            throw $e;
+            echo $e->getMessage();
+            exit;
         }
     }
 }

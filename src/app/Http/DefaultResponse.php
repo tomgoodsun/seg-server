@@ -461,24 +461,20 @@ class DefaultResponse implements ResponseInterface
      */
     public function __toString(): string
     {
-        // TODO
-        //$output = sprintf(
-        //    'HTTP/%s %s %s%s',
-        //    $this->response->getProtocolVersion(),
-        //    $this->response->getStatusCode(),
-        //    $this->response->getReasonPhrase(),
-        //    self::EOL
-        //);
+        $output = sprintf(
+            'HTTP/%s %s %s%s',
+            $this->response->getProtocolVersion(),
+            $this->response->getStatusCode(),
+            $this->response->getReasonPhrase(),
+            self::EOL
+        );
 
         foreach ($this->response->getHeaders() as $name => $values) {
-            header(sprintf('%s: %s', $name, $this->response->getHeaderLine($name)) . self::EOL);
-            //$output .= sprintf('%s: %s', $name, $this->response->getHeaderLine($name)) . self::EOL;
+            $output .= sprintf('%s: %s', $name, $this->response->getHeaderLine($name)) . self::EOL;
         }
 
-        //$output .= self::EOL;
-        //$output .= $this->response->getBody();
-        //return $output;
-
-        return $this->response->getBody();
+        $output .= self::EOL;
+        $output .= $this->response->getBody();
+        return $output;
     }
 }

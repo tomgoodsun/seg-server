@@ -264,12 +264,10 @@ class Route
     {
         $method = strtolower($method);
         if (!array_key_exists($method, static::$routes)) {
-            // TODO: 404 Exception
-            throw new \Exception("Method '{$method}' not allowed");
+            throw new NotFoundException("Method '{$method}' not allowed");
         }
         if (!array_key_exists($path, static::$routes[$method])) {
-            // TODO: 404 Exception
-            throw new \Exception("Route '{$path}' not found");
+            throw new NotFoundException("Route '{$path}' not found");
         }
         return static::$routes[$method][$path];
     }
