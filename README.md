@@ -22,6 +22,8 @@ English
 
 ## Database definitions
 
+![Seg-server Database ER-model](seg-server-db.png "Seg-server Database ER-model")
+
 ### `game`
 
 |Name|Data Type|Options|
@@ -122,6 +124,8 @@ English
     - 各スコアをクリックすると詳細を表示する。ユーザーID、ニックネーム、スコア、履歴、最終アクセス日。
 
 ## Database definitions
+
+![Seg-server Database ER-model](seg-server-db.png "Seg-server Database ER-model")
 
 ### `game`
 
