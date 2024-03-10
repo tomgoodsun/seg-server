@@ -127,6 +127,7 @@ English
 |Name|Data Type|Options|
 |:---|:---|:---|
 |`id`|`BIGINT`|AUTO INCREMENT|
+|`name`|`VARCHAR`||
 |`api_token`|`VARCHAR`|NULLABLE|
 |`expired_date`|`TIMESTAMP`|NULLABLE|
 |`updated_date`|`TIMESTAMP`|ON UPDATE|
@@ -137,10 +138,10 @@ English
 |Name|Data Type|Options|
 |:---|:---|:---|
 |`id`|`BIGINT`|AUTO INCREMENT|
+|`nickname`|`VARCHAR`|NULLABLE|
 |`access_token`|`VARCHAR`|NULLABLE|
 |`refresh_token`|`VARCHAR`|NULLABLE|
 |`expired_date`|`TIMESTAMP`|NULLABLE|
-|`nickname`|`VARCHAR`|NULLABLE|
 |`deleted_flag`|`TINYINT`||
 |`updated_date`|`TIMESTAMP`||
 |`created_date`|`TIMESTAMP`||
@@ -195,9 +196,9 @@ English
 |`/admin/user`|【管理】ユーザー一覧。|
 |`/admin/user/{user_id?}`|【管理】詳細を表示する。`{user_id}`は必須。|
 |`/page`|エンドユーザー向けのポータルページ。|
-|`/page/{game_id}`|ゲーム詳細ページ。|
-|`/page/{game_id}/ranking`|ゲームのランキング。|
-|`/page/{user_id}`|ユーザーページ。|
-|`/page/{user_id}/history/{game_id}`|ユーザーゲームページ。|
+|`/page/game/{game_id}`|ゲーム詳細ページ。|
+|`/page/game/{game_id}/ranking`|ゲームのランキング。|
+|`/page/user/{user_id}`|ユーザーページ。|
+|`/page/user/{user_id}/history/{game_id}`|ユーザーゲームページ。|
 
 

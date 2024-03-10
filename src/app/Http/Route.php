@@ -119,10 +119,10 @@ class Route
      */
     public function setName(string $name): Route
     {
-        if ($name && array_key_exists($name, static::$routesByNames)) {
+        if (array_key_exists($name, static::$routesByNames)) {
             throw new \Exception("Route with name '{$name}' already exists");
         }
-        $this->name = $name;
+        static::$routesByNames[$name] = $this;
         return $this;
     }
 
@@ -181,7 +181,6 @@ class Route
             throw new \Exception("Route with path '{$path}' already exists");
         }
         static::$routes[$method][$path] = new self($path, $method, $handler, $name);
-        static::$routesByNames[$name] = static::$routes[$method][$path];
         if (null !== $name) {
             static::$routes[$method][$path]->setName($name);
         }

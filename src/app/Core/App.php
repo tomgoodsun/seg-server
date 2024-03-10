@@ -3,6 +3,7 @@ namespace App\Core;
 
 use App\Http\Route;
 use App\Core\ResponseEmitter;
+use App\Database\PdoSql;
 use Psr\Http\Message\ResponseInterface;
 
 class App
@@ -14,6 +15,18 @@ class App
      */
     private $config;
 
+    /**
+     * Databse instance
+     *
+     * @var PdoSql
+     */
+    private $database;
+
+    /**
+     * Constructor
+     *
+     * @param array $config
+     */
     public function __construct(array $config)
     {
         $this->config = new Config($config);
@@ -29,6 +42,36 @@ class App
         return $this->config;
     }
 
+    /**
+     * Get database instance, if not exists create new one
+     *
+     * @return PdoSql
+     */
+    public function getDatabase()
+    {
+        if ($this->database === null) {
+            $dsn = sprintf(
+                '%s:host=%s;port=%s;dbname=%s',
+                $this->config->get('DB_DRIVER'),
+                $this->config->get('DB_HOST'),
+                $this->config->get('DB_PORT'),
+                $this->config->get('DB_SCHEMA')
+            );
+            $this->database = new PdoSql(
+                $dsn,
+                $this->config->get('DB_USER'),
+                $this->config->get('DB_PASSWORD'),
+                []
+            );
+        }
+        return $this->database;
+    }
+
+    /**
+     * Start the application
+     *
+     * @return void
+     */
     public function run()
     {
         try {
