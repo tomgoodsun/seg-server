@@ -27,6 +27,7 @@ English
 |Name|Data Type|Options|
 |:---|:---|:---|
 |`id`|`BIGINT`|AUTO INCREMENT|
+|`name`|`VARCHAR`|NULLABLE|
 |`api_token`|`VARCHAR`|NULLABLE|
 |`expired_date`|`TIMESTAMP`|NULLABLE|
 |`updated_date`|`TIMESTAMP`|ON UPDATE|
@@ -37,10 +38,10 @@ English
 |Name|Data Type|Options|
 |:---|:---|:---|
 |`id`|`BIGINT`|AUTO INCREMENT|
+|`nickname`|`VARCHAR`|NULLABLE|
 |`access_token`|`VARCHAR`|NULLABLE|
 |`refresh_token`|`VARCHAR`|NULLABLE|
 |`expired_date`|`TIMESTAMP`|NULLABLE|
-|`nickname`|`VARCHAR`|NULLABLE|
 |`deleted_flag`|`TINYINT`||
 |`updated_date`|`TIMESTAMP`||
 |`created_date`|`TIMESTAMP`||
@@ -95,10 +96,10 @@ English
 |`/admin/user`|Lists users.|
 |`/admin/user/{user_id}`|Shows user details. `{user_id}` is required.|
 |`/page`|Portal page for end users.|
-|`/page/{game_id}`|Game detail page.|
-|`/page/{game_id}/ranking`|Ranking for game.|
-|`/page/{user_id}`|User page.|
-|`/page/{user_id}/history/{game_id}`|User game page.|
+|`/page/game/{game_id}`|Game detail page.|
+|`/page/game/{game_id}/ranking`|Ranking for game.|
+|`/page/user/{user_id}`|User page.|
+|`/page/user/{user_id}/history/{game_id}`|User game page.|
 
 
 ---
