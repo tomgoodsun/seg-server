@@ -9,3 +9,13 @@ function exception_error_handler(int $errno, string $errstr, string $errfile = n
     throw new \ErrorException($errstr, 0, $errno, $errfile, $errline);
 }
 set_error_handler('exception_error_handler');
+
+function renderError(\Throwable $e): string
+{
+    return sprintf(
+        '<h1>%s</h1><p>%s</p><pre>%s</pre>',
+        'Error',
+        $e->getMessage(),
+        $e->getTraceAsString()
+    );
+}

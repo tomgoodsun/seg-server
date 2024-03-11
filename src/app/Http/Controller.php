@@ -23,7 +23,7 @@ abstract class Controller
      * @param array $params
      * @return mixed|ResponseInterface
      */
-    public function dispatch(string $action, array $params = [])
+    public function dispatch(string $action, array $params = []): mixed
     {
         $this->before($this->request, $this->response);
         $ret = call_user_func_array([$this, $action], [$this->request, $this->response, ...$params]);
@@ -31,12 +31,12 @@ abstract class Controller
         return $ret;
     }
 
-    protected function before(RequestInterface $request, ResponseInterface $response)
+    protected function before(RequestInterface $request, ResponseInterface $response): void
     {
         // do nothing, override if needed
     }
 
-    protected function after(RequestInterface $request, ResponseInterface $response)
+    protected function after(RequestInterface $request, ResponseInterface $response): void
     {
         // do nothing, override if needed
     }
