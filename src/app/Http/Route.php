@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 class Route
@@ -131,7 +132,7 @@ class Route
      *
      * @return ResponseInterface
      */
-    public function dispatch()
+    public function dispatch(): ResponseInterface
     {
         $handler = explode('@', $this->handler);
         if (count($handler) !== 2) {
@@ -146,9 +147,9 @@ class Route
     /**
      * Create request
      *
-     * @return Request
+     * @return RequestInterface
      */
-    public function createRequest()
+    public function createRequest(): RequestInterface
     {
         return Factory::createRequest();
     }
@@ -158,7 +159,7 @@ class Route
      *
      * @return ResponseInterface
      */
-    public function createResponse()
+    public function createResponse(): ResponseInterface
     {
         return Factory::createDefaultResponse();
     }
@@ -253,21 +254,83 @@ class Route
     }
 
     /**
+     * Create route resolving pattern
+     *
+     * TODO: This is much better define Resolver class
+     *
+     * @param string $path
+     * @return array
+     */
+    final public static function createPattern(string $path): array
+    {
+        $paramNames = [];
+        $parts = explode('/', $path);
+        array_walk($parts, function (&$part) use (&$paramNames) {
+            if (preg_match('/^{([a-zA-Z_][a-zA-Z0-9_-]*)}$/', $part)) {
+                // Remove '{' at first and '}' at last
+                $paramNames[] = preg_replace('/(^\{|\}$)/', '', $part);
+                $part = '([a-zA-Z0-9_-]*)';
+            }
+        });
+        return [implode('\/', $parts), $paramNames];
+    }
+
+    /**
      * Find route
      *
+     * TODO: This is much better define Resolver class
+     *
      * @param string $method
-     * @param string $path
+     * @param string $uri
      * @return Route
      */
-    public static function resolve(string $method, string $path): Route
+    final public static function resolve(string $method, string $path): Route
     {
         $method = strtolower($method);
         if (!array_key_exists($method, static::$routes)) {
             throw new NotFoundException("Method '{$method}' not allowed");
         }
-        if (!array_key_exists($path, static::$routes[$method])) {
-            throw new NotFoundException("Route '{$path}' not found");
+        if (array_key_exists($path, static::$routes[$method])) {
+            $route = static::$routes[$method][$path];
+        } else {
+            // No static route found, try to resolve by pattern
+            $route = self::resolveByPattern($method, $path);
+            if (null === $route) {
+                throw new NotFoundException("Route '{$path}' not found");
+            }
         }
-        return static::$routes[$method][$path];
+        return $route;
+    }
+
+    /**
+     * Resolve route by pattern, set URI-including query parameters are set into $_GET
+     * (simple pattern matching)
+     *
+     * TODO: This is much better define Resolver class
+     *
+     * @param string $method
+     * @param string $path
+     * @return Route|null
+     */
+    final public static function resolveByPattern(string $method, string $path): Route|null
+    {
+        foreach (static::$routes[$method] as $routePath => $route) {
+            // Avoid too many nested if/for statements
+            $matches = [];
+            list($pattern, $paramNames) = static::createPattern($routePath);
+            if (!preg_match('/^' . $pattern . '$/', $path, $matches)) {
+                continue;
+            }
+            if (count($matches) !== count($paramNames) + 1) {
+                continue;
+            }
+            foreach ($paramNames as $index => $name) {
+                // At this point, Request object is not created yet
+                // URI-including query string is for $_GET parameter
+                $_GET[$name] = $matches[$index + 1];
+            }
+            return $route;
+        }
+        return null;
     }
 }

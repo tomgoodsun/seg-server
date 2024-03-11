@@ -1,6 +1,8 @@
 <?php
 namespace App\Http;
 
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use Slim\Psr7\Factory\StreamFactory;
 use Slim\Psr7\Headers;
 use Slim\Psr7\Request;
@@ -15,9 +17,9 @@ class Factory
      *
      * TODO: To implement original request class detected from URI and web routes
      *
-     * @return Request
+     * @return RequestInterface
      */
-    public static function createRequest()
+    public static function createRequest(): RequestInterface
     {
         $method = $_SERVER['REQUEST_METHOD'];
         $uri = new Uri('http', $_SERVER['HTTP_HOST'], null, $_SERVER['REQUEST_URI']);
@@ -32,7 +34,7 @@ class Factory
      *
      * @return ResponseInterface
      */
-    public static function createDefaultResponse()
+    public static function createDefaultResponse(): ResponseInterface
     {
         $response = new Response();
         $streamFactory = new StreamFactory();
