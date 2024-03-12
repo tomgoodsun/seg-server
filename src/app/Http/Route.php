@@ -52,9 +52,14 @@ class Route
     /**
      * Controller object
      *
-     * @var Controller
+     * @var AbstractController
      */
     private $controller;
+
+    /**
+     * @var RoutingResolver
+     */
+    private $resolver;
 
     /**
      * Route constructor
@@ -113,6 +118,19 @@ class Route
     }
 
     /**
+     * Get routing resolver
+     *
+     * @return RoutingResolver
+     */
+    public function getRoutingResolver(): RoutingResolver
+    {
+        if (null === $this->resolver) {
+            $this->resolver = new RoutingResolver($this->path);
+        }
+        return $this->resolver;
+    }
+
+    /**
      * Set name
      *
      * @param string $name
@@ -138,7 +156,14 @@ class Route
         if (count($handler) !== 2) {
             throw new \Exception("Invalid route handler '{$this->handler}'");
         }
-        /** @var Controller $controller */
+        if (!class_exists($handler[0])) {
+            throw new \Exception("Controller class '{$handler[0]}' not found");
+        }
+        if (!method_exists($handler[0], $handler[1])) {
+            throw new \Exception("Method '{$handler[1]}' not found in '{$handler[0]}'");
+        }
+
+        /** @var AbstractController $controller */
         $controller = new $handler[0]($this->createRequest(), $this->createResponse());
         $method = $handler[1];
         return $controller->dispatch($method);
@@ -254,28 +279,6 @@ class Route
     }
 
     /**
-     * Create route resolving pattern
-     *
-     * TODO: This is much better define Resolver class
-     *
-     * @param string $path
-     * @return array
-     */
-    final public static function createPattern(string $path): array
-    {
-        $paramNames = [];
-        $parts = explode('/', $path);
-        array_walk($parts, function (&$part) use (&$paramNames) {
-            if (preg_match('/^{([a-zA-Z_][a-zA-Z0-9_-]*)}$/', $part)) {
-                // Remove '{' at first and '}' at last
-                $paramNames[] = preg_replace('/(^\{|\}$)/', '', $part);
-                $part = '([a-zA-Z0-9_-]*)';
-            }
-        });
-        return [implode('\/', $parts), $paramNames];
-    }
-
-    /**
      * Find route
      *
      * TODO: This is much better define Resolver class
@@ -287,50 +290,23 @@ class Route
     final public static function resolve(string $method, string $path): Route
     {
         $method = strtolower($method);
-        if (!array_key_exists($method, static::$routes)) {
-            throw new NotFoundException("Method '{$method}' not allowed");
+        if (array_key_exists($method, static::$routes)
+            && array_key_exists($path, static::$routes[$method])
+        ) {
+            return static::$routes[$method][$path];
         }
-        if (array_key_exists($path, static::$routes[$method])) {
-            $route = static::$routes[$method][$path];
-        } else {
-            // No static route found, try to resolve by pattern
-            $route = self::resolveByPattern($method, $path);
-            if (null === $route) {
-                throw new NotFoundException("Route '{$path}' not found");
-            }
-        }
-        return $route;
-    }
 
-    /**
-     * Resolve route by pattern, set URI-including query parameters are set into $_GET
-     * (simple pattern matching)
-     *
-     * TODO: This is much better define Resolver class
-     *
-     * @param string $method
-     * @param string $path
-     * @return Route|null
-     */
-    final public static function resolveByPattern(string $method, string $path): Route|null
-    {
-        foreach (static::$routes[$method] as $routePath => $route) {
-            // Avoid too many nested if/for statements
-            $matches = [];
-            list($pattern, $paramNames) = static::createPattern($routePath);
-            if (!preg_match('/^' . $pattern . '$/', $path, $matches)) {
-                continue;
+        $foundRoute = null;
+        foreach (static::$routes[$method] as $route) {
+            if ($route->getRoutingResolver()->match($path)) {
+                $route->getRoutingResolver()->setQueryParams();
+                $foundRoute = $route;
             }
-            if (count($matches) !== count($paramNames) + 1) {
-                continue;
-            }
-            foreach ($paramNames as $index => $name) {
-                // At this point, Request object is not created yet
-                // URI-including query string is for $_GET parameter
-                $_GET[$name] = $matches[$index + 1];
-            }
-            return $route;
         }
-        return null;
+        if (null === $foundRoute) {
+            throw new NotFoundException("Route '{$path}' not found");
+        }
+
+        return $foundRoute;
     }
 }

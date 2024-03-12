@@ -58,7 +58,6 @@ class ResponseEmitter
     private function emitBody(ResponseInterface $response): void
     {
         $body = $response->getBody();
-        dump($body);
         $amountToRead = (int) $response->getHeaderLine('Content-Length');
         if ($amountToRead === 0) {
             $amountToRead = $body->getSize();

@@ -10,12 +10,27 @@ function exception_error_handler(int $errno, string $errstr, string $errfile = n
 }
 set_error_handler('exception_error_handler');
 
-function renderError(\Throwable $e): string
+function renderError(\Throwable $e): void
 {
-    return sprintf(
-        '<h1>%s</h1><p>%s</p><pre>%s</pre>',
-        'Error',
-        $e->getMessage(),
-        $e->getTraceAsString()
-    );
+    $html = '';
+    $html .= '<html>';
+    $html .= '<head>';
+    $html .= '<title>Error: ' . $e->getMessage() . '</title>';
+    $html .= '</head>';
+    $html .= '<body>';
+    $html .= '<h1>Error</h1>';
+
+    $html .= '<dl>';
+    $html .= '<dt><strong>Message</strong></dt>';
+    $html .= '<dd>' . $e->getMessage() . '</dd>';
+    $html .= '</dl>';
+
+    $html .= '<dl>';
+    $html .= '<dt><strong>Stacktrace</strong></dt>';
+    $html .= '<dd><pre>' . $e->getTraceAsString() . '</pre></dd>';
+    $html .= '</dl>';
+    $html .= '</body>';
+    $html .= '</html>';
+
+    echo $html;
 }

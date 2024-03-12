@@ -3,6 +3,12 @@
 use App\Http\Route;
 
 Route::get('/', '\\App\\Http\\Controllers\\HomeController@index')->setName('home');
+
+Route::get('/api/auth', '\\App\\Http\\Controllers\\ApiAuthController@get')->setName('api_auth_get');
+Route::post('/api/user', '\\App\\Http\\Controllers\\ApiUserController@post')->setName('api_user_post');
+Route::put('/api/user', '\\App\\Http\\Controllers\\ApiUserController@put')->setName('api_user_put');
+Route::put('/api/result', '\\App\\Http\\Controllers\\ApiResultController@put')->setName('api_result_put');
+
 Route::get('/admin', '\\App\\Http\\Controllers\\AdminController@index')->setName('admin_home');
 Route::get('/admin/game', '\\App\\Http\\Controllers\\AdminGameController@index')->setName('admin_game');
 Route::get('/admin/game/{game_id}', '\\App\\Http\\Controllers\\AdminGameController@game')->setName('admin_game_edit');

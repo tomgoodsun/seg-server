@@ -37,7 +37,15 @@ class PdoSql
      */
     private $temporarySql = '';
 
-    public function __construct($dsn, $username, $password, array $dbconfig)
+    /**
+     * Constructor
+     *
+     * @param string $dsn
+     * @param string $username
+     * @param string $password
+     * @param array $dbconfig
+     */
+    public function __construct(string $dsn, string $username, string $password, array $dbconfig)
     {
         $dbconfig += [
             'options'  => [],
@@ -45,6 +53,27 @@ class PdoSql
         $this->dsn = $dsn;
         $this->driverOptions = $dbconfig['options'];
         static::initialize($dsn, $username, $password, $dbconfig);
+    }
+
+    /**
+     * Singleton pattern
+     *
+     * @return PdoSql
+     */
+    public static function getInstance()
+    {
+        static $instance = null;
+        if (null === $instance) {
+            $dsn = sprintf(
+                '%s:host=%s;port=%s;dbname=%s',
+                $_ENV['DB_DRIVER'],
+                $_ENV['DB_HOST'],
+                $_ENV['DB_PORT'],
+                $_ENV['DB_SCHEMA']
+            );
+            $instance = new static($dsn, $_ENV['DB_USER'], $_ENV['DB_PASSWORD'], []);
+        }
+        return $instance;
     }
 
     /**
