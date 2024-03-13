@@ -176,7 +176,7 @@ class Route
      */
     public function createRequest(): RequestInterface
     {
-        return Factory::createRequest();
+        return Factory::createDefaultRequest();
     }
 
     /**

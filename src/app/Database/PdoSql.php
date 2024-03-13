@@ -82,7 +82,7 @@ class PdoSql
      * @param string $dsn  DSN string
      * @return array Parsed result
      */
-    public static function parseDsnByVendor($dsn)
+    public static function parseDsnByVendor(string $dsn)
     {
         $vendor = $source = '';
         $colonPos = strpos($dsn, ':');
@@ -99,7 +99,7 @@ class PdoSql
      * @param string $dsn  DSN string
      * @return array Parsed result
      */
-    public static function parseDsn($dsn)
+    public static function parseDsn(string $dsn)
     {
         $params = [];
         list($vendor, $source) = self::parseDsnByVendor($dsn);
@@ -119,7 +119,7 @@ class PdoSql
      * @param string $query  SQL
      * @return string  Query type
      */
-    public static function detectQueryType($query)
+    public static function detectQueryType(string $query)
     {
         $queryTypes = [
             'select',
@@ -144,11 +144,11 @@ class PdoSql
     /**
      * Compute offset/limit
      *
-     * @param int $page = null         Page No.
-     * @param int $itemPerPage = null  Number of items per page
+     * @param int|null $page         Page No.
+     * @param int|null $itemPerPage  Number of items per page
      * @return array (offset/row count)
      */
-    public static function computeOffset($page = null, $itemPerPage = null)
+    public static function computeOffset(?int $page = null, ?int $itemPerPage = null)
     {
         $offset = $rowCount = null;
         if ($page !== null && $itemPerPage !== null) {
@@ -163,7 +163,7 @@ class PdoSql
      *
      * @param boolean $return = false  Use return or not (exception)
      */
-    protected function isAvailable($return = false)
+    protected function isAvailable(bool $return = false)
     {
         if ($return) {
             return class_exists('\PDO');
@@ -180,6 +180,7 @@ class PdoSql
     {
         if (!$this->pdo) {
             try {
+                dump($this->dsn);
                 $this->pdo = new \PDO($this->dsn, $this->username, $this->password, $this->driverOptions);
             } catch (\PDOException $e) {
                 throw new \Exception('Connection error: ' . $e->getMessage());
@@ -235,14 +236,14 @@ class PdoSql
     /**
      * Create data set for each result type to return to caller
      *
-     * @param Result $result            The pointer to the resource of result
+     * @param \PDOStatement $result            The pointer to the resource of result
      * @param string $vendorResultType  Result type of returned array
      *     [ASSOC]
      *         Default. 2-level numbered-associated array.
      *     [NUM]
      *         Default. 2-level numbered-numbered array.
      */
-    protected function fetchResultByType($result, $vendorResultType)
+    protected function fetchResultByType(\PDOStatement $result, string $vendorResultType)
     {
         return $result->fetchAll($vendorResultType);
     }
@@ -268,7 +269,7 @@ class PdoSql
      * @param \PDOStatement $result
      * @return int
      */
-    protected function affectedRows($result)
+    protected function affectedRows(\PDOStatement $result)
     {
         return $result->rowCount();
     }
@@ -276,13 +277,17 @@ class PdoSql
     /**
      * This function must be called by subclass
      *
-     * @param string $dsn           DSN
-     * @param string $username      Username
-     * @param string $password      Password
-     * @param array $dbconfig = []  Array of database configurations
+     * @param string $dsn        DSN
+     * @param string $username   Username
+     * @param string $password   Password
+     * @param array $dbconfig    Array of database configurations
      */
-    protected function initialize($dsn, $username, $password, array $dbconfig = [])
-    {
+    protected function initialize(
+        string $dsn,
+        string $username,
+        string $password,
+        array $dbconfig = []
+    ) {
         $this->dsn = $dsn;
         $dbconfig += static::parseDsn($this->dsn);
         $dbconfig += [
@@ -304,6 +309,7 @@ class PdoSql
         $this->tablePrefix = $dbconfig['table_prefix'];
         $this->tablePrefixSign = $dbconfig['table_prefix_sign'];
         $this->autoTransaction = $dbconfig['auto_transaction'];
+        $this->connect();
     }
 
     /**
@@ -328,21 +334,22 @@ class PdoSql
      */
     public function quote($value)
     {
-        if ($value === null) {
-            return 'NULL';
-        }
-        return "'" . addslashes((string)$value) . "'";
+        //if ($value === null) {
+        //    return 'NULL';
+        //}
+        //return "'" . addslashes((string)$value) . "'";
+        return $value;
     }
 
     /**
      * Bind values to SQL
      * *CAUTION* This method DOES NOT work for some vendor.
      *
-     * @param $query
+     * @param string $query
      * @param array $params
      * @return String  Value-binded SQL statement
      */
-    public function bindValues($query, array $params)
+    public function bindValues(string $query, array $params)
     {
         foreach ($params as $key => $value) {
             if (is_array($value)) {
@@ -366,11 +373,11 @@ class PdoSql
     /**
      * Prepare SQL and database before executing query
      *
-     * @param string $query            SQL statement
-     * @param int $page = null         Page No.
-     * @param int $itemPerPage = null  Number of items per page
+     * @param string $query          SQL statement
+     * @param int|null $page         Page No.
+     * @param int|null $itemPerPage  Number of items per page
      */
-    protected function prepare($query, $page = null, $itemPerPage = null)
+    protected function prepare(string $query, ?int $page = null, ?int $itemPerPage = null)
     {
         if ($page !== null && $itemPerPage !== null) {
             list($offset, $rowCount) = static::computeOffset($page, $itemPerPage);
@@ -383,12 +390,12 @@ class PdoSql
     /**
      * Export binded SQL statement
      *
-     * @param $query                   SQL statement
-     * @param int $page = null         Page No.
-     * @param int $itemPerPage = null  Number of items per page
+     * @param string $query          SQL statement
+     * @param int|null $page         Page No.
+     * @param int|null $itemPerPage  Number of items per page
      * @return string Binded SQL statement
      */
-    public function exportBindSql($query, array $params, $page = null, $itemPerPage = null)
+    public function exportBindSql(string $query, array $params, ?int $page = null, ?int $itemPerPage = null)
     {
         if ($page !== null && $itemPerPage !== null) {
             list($offset, $rowCount) = static::computeOffset($page, $itemPerPage);
@@ -406,7 +413,7 @@ class PdoSql
      * @param int $rowCount  Limit
      * @return string  SQL
      */
-    protected function createLimitQuery($query, $offset, $rowCount)
+    protected function createLimitQuery(string $query, int $offset, int $rowCount)
     {
         $query .= sprintf(' LIMIT %d, %d', $offset, $rowCount);
         $query = preg_replace('/\bselect\b/i', 'SELECT SQL_CALC_FOUND_ROWS ', $query);
@@ -418,7 +425,7 @@ class PdoSql
      *
      * @param string $query  SQL statement
      */
-    protected function setQuery($query)
+    protected function setQuery(string $query)
     {
         $this->temporarySql = str_replace($this->tablePrefixSign, $this->tablePrefix . '_', $query);
     }
@@ -462,19 +469,26 @@ class PdoSql
     /**
      * Execute DML query statement
      *
-     * @param $query                   SQL statement
-     * @param int $page = null         Page No.
-     * @param int $itemPerPage = null  Number of items per page
-     * @param $resultType              Type of result array
+     * @param string $query          SQL statement
+     * @param array $params = []     Bind parameters
+     * @param int|null $page         Page No.
+     * @param int|null $itemPerPage  Number of items per page
+     * @param string $resultType     Type of result array
      */
-    public function query($query, array $params = [], $page = null, $itemPerPage = null, $resultType = 'ASSOC')
-    {
+    public function query(
+        string $query,
+        array $params = [],
+        ?int $page = null,
+        ?int $itemPerPage = null,
+        string $resultType = 'ASSOC'
+    ) {
         $data = $this->fetchResult($query, $params, $page, $itemPerPage, $resultType);
         $count = null;
         if ($page !== null && $itemPerPage !== null) {
             $counter = $this->query('SELECT FOUND_ROWS() AS count');
             $count = $counter[0]['count'];
         }
+        dump($data);
         $result = new Result($data, $page, $itemPerPage, $count);
         return $result;
     }
@@ -482,11 +496,11 @@ class PdoSql
     /**
      * Execute DDL query statement
      *
-     * @param string $query      SQL statement
-     * @param array $param = []  Bind parameters
-     * @return array|object      Resultset
+     * @param string $query  SQL statement
+     * @param array $param   Bind parameters
+     * @return array|object  Resultset
      */
-    public function exec($query, array $params = [])
+    public function exec(string $query, array $params = [])
     {
         try {
             $result = $this->execute($query, $params);
@@ -503,11 +517,11 @@ class PdoSql
     /**
      * Execute DDL query statement
      *
-     * @param string $query      SQL statement
-     * @param array $param = []  Bind parameters
+     * @param string $query  SQL statement
+     * @param array $param   Bind parameters
      * @return int
      */
-    public function execute($query, array $params = [])
+    public function execute(string $query, array $params = [])
     {
         $this->prepare($query);
         $result = null;
@@ -528,10 +542,10 @@ class PdoSql
     /**
      * Get last instert ID
      *
-     * @param string $name = null  Name of sequence object
+     * @param string|null $name  Name of sequence object
      * @return int Last insert ID
      */
-    public function lastInsertId($name = null)
+    public function lastInsertId(?string $name = null)
     {
         return $this->statement->lastInsertId($name);
     }
@@ -539,16 +553,21 @@ class PdoSql
     /**
      * Fetch result
      *
-     * @param string $query            SQL statement
-     * @param array $param = []        Bind parameters
-     * @param int $page = null         Page No.
-     * @param int $itemPerPage = null  Number of items per page
-     * @param $resultType              Type of result array
+     * @param string $query          SQL statement
+     * @param array $param           Bind parameters
+     * @param int|null $page         Page No.
+     * @param int|null $itemPerPage  Number of items per page
+     * @param string $resultType     Type of result array
      * @return \PDOStatement
      * @throws \Exception
      */
-    protected function fetchResult($query, array $params = [], $page = null, $itemPerPage = null, $resultType = 'ASSOC')
-    {
+    protected function fetchResult(
+        string $query,
+        array $params = [],
+        ?int $page = null,
+        ?int $itemPerPage = null,
+        string $resultType = 'ASSOC'
+    ) {
         $this->prepare($query, $page, $itemPerPage);
         $result = $this->executeQuery($params);
         try {
@@ -572,7 +591,7 @@ class PdoSql
      *     [NUM]
      *         Default. 2-level numbered-numbered array.
      */
-    protected function getResultType($resultType)
+    protected function getResultType(string $resultType)
     {
         switch ($resultType) {
             case 'NUM':
