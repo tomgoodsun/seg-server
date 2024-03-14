@@ -6,8 +6,18 @@ use PDO;
 class PdoSql
 {
     private $driverOptions = [];
+
+    /**
+     * @var PDO
+     */
     protected $pdo = null;
+
+    /**
+     * @var \PDOStatement
+     */
     protected $statement = null;
+
+
     protected $dsn = '';
 
     /**
@@ -180,7 +190,6 @@ class PdoSql
     {
         if (!$this->pdo) {
             try {
-                dump($this->dsn);
                 $this->pdo = new \PDO($this->dsn, $this->username, $this->password, $this->driverOptions);
             } catch (\PDOException $e) {
                 throw new \Exception('Connection error: ' . $e->getMessage());
@@ -210,7 +219,7 @@ class PdoSql
      */
     public function startTransaction()
     {
-        $this->pdo->startTransaction();
+        $this->pdo->beginTransaction();
     }
 
     /**
@@ -488,7 +497,6 @@ class PdoSql
             $counter = $this->query('SELECT FOUND_ROWS() AS count');
             $count = $counter[0]['count'];
         }
-        dump($data);
         $result = new Result($data, $page, $itemPerPage, $count);
         return $result;
     }
@@ -547,7 +555,7 @@ class PdoSql
      */
     public function lastInsertId(?string $name = null)
     {
-        return $this->statement->lastInsertId($name);
+        return $this->pdo->lastInsertId($name);
     }
 
     /**

@@ -4,11 +4,11 @@
  */
 namespace App\Core;
 
-use Psr\Http\Message\ResponseInterface;
+use App\Http\DefaultResponse;
 
 class ResponseEmitter
 {
-    public function emit(ResponseInterface $response)
+    public function emit(DefaultResponse $response)
     {
         $this->emitHeader($response);
         $this->emitStatusLine($response);
@@ -18,10 +18,10 @@ class ResponseEmitter
     /**
      * Emit headers
      *
-     * @param ResponseInterface $response
+     * @param DefaultResponse $response
      * @return void
      */
-    private function emitHeader(ResponseInterface $response): void
+    private function emitHeader(DefaultResponse $response): void
     {
         foreach ($response->getHeaders() as $name => $values) {
             $first = strtolower($name) !== 'set-cookie';
@@ -35,10 +35,10 @@ class ResponseEmitter
     /**
      * Emit status line
      *
-     * @param ResponseInterface $response
+     * @param DefaultResponse $response
      * @return void
      */
-    private function emitStatusLine(ResponseInterface $response): void
+    private function emitStatusLine(DefaultResponse $response): void
     {
         $statusLine = sprintf(
             'HTTP/%s %d %s',
@@ -52,20 +52,16 @@ class ResponseEmitter
     /**
      * Emit body
      *
-     * @param ResponseInterface $response
+     * @param DefaultResponse $response
      * @return void
      */
-    private function emitBody(ResponseInterface $response): void
+    private function emitBody(DefaultResponse $response): void
     {
-        $body = $response->getBody();
-        $amountToRead = (int) $response->getHeaderLine('Content-Length');
-        if ($amountToRead === 0) {
-            $amountToRead = $body->getSize();
-        }
-        if ($amountToRead > 0) {
-            echo $body->read($amountToRead);
+        $content = $response->getContent();
+        if (empty($content)) {
+            echo $response;
             return;
         }
-        echo $response;
+        echo $content;
     }
 }

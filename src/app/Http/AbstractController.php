@@ -1,15 +1,12 @@
 <?php
 namespace App\Http;
 
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
-
 abstract class AbstractController
 {
-    private RequestInterface $request;
-    private ResponseInterface $response;
+    private DefaultRequest $request;
+    private DefaultResponse $response;
 
-    public function __construct(RequestInterface $request, ResponseInterface $response)
+    public function __construct(DefaultRequest $request, DefaultResponse $response)
     {
         $this->request = $request;
         $this->response = $response;
@@ -20,24 +17,24 @@ abstract class AbstractController
      *
      * @param string $action
      * @param array $params
-     * @return mixed|ResponseInterface
+     * @return mixed|DefaultResponse
      */
     public function dispatch(string $action, array $params = []): mixed
     {
-        $this->before($this->request, $this->response);
-        $ret = call_user_func_array([$this, $action], [$this->request, $this->response, ...$params]);
-        $this->after($this->request, $this->response);
-        return $ret;
+        $response = $this->before($this->request, $this->response);
+        $response = call_user_func_array([$this, $action], [$this->request, $response, ...$params]);
+        $response = $this->after($this->request, $response);
+        return $response;
     }
 
-    protected function before(RequestInterface $request, ResponseInterface $response): void
+    protected function before(DefaultRequest $request, DefaultResponse $response): DefaultResponse
     {
-        // do nothing, override if needed
+        return $response;
     }
 
-    protected function after(RequestInterface $request, ResponseInterface $response): void
+    protected function after(DefaultRequest $request, DefaultResponse $response): DefaultResponse
     {
-        // do nothing, override if needed
+        return $response;
     }
 
     /**

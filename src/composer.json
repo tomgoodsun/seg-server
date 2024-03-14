@@ -13,6 +13,7 @@
     "includes/*.php"
   ],
   "require": {
+    "nesbot/carbon": "^2.51",
     "slim/psr7": "*",
     "symfony/var-dumper": "*",
     "symfony/dotenv": "^7.0.4"

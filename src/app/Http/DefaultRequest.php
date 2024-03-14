@@ -23,4 +23,9 @@ class DefaultRequest extends Request
     {
         return $this->bearerToken;
     }
+
+    public function getParam(string $name, $default = null)
+    {
+        return $this->getServerParams()[$name] ?? $default;
+    }
 }

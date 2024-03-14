@@ -477,4 +477,23 @@ class DefaultResponse implements ResponseInterface
         $output .= $this->response->getBody();
         return $output;
     }
+
+    /**
+     * Custom method to get the content of the response body
+     *
+     * @return string
+     */
+    public function getContent(): string
+    {
+        $content = '';
+        $body = $this->getBody();
+        $amountToRead = (int) $this->getHeaderLine('Content-Length');
+        if (0 === $amountToRead) {
+            $amountToRead = $body->getSize();
+        }
+        if ($amountToRead > 0) {
+            $content = $body->read($amountToRead);
+        }
+        return $content;
+    }
 }

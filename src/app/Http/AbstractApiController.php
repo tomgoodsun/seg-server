@@ -2,12 +2,10 @@
 namespace App\Http;
 
 use App\Database\PdoSql;
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
 
 abstract class AbstractApiController extends AbstractController
 {
-    protected function before(RequestInterface $request, ResponseInterface $response): void
+    protected function before(DefaultRequest $request, DefaultResponse $response): DefaultResponse
     {
         // TODO: Define 401 Exception class
 
@@ -18,12 +16,6 @@ abstract class AbstractApiController extends AbstractController
         }
         preg_match('/Bearer\s+(.*)/', $bearerToken[0], $matches);
         $request->bearerToken = $matches[1] ?? '';
-        //$request->bearerToken = 'test';
-
-        $apiToken = $request->getHeader('API_TOKEN');
-        if (empty($apiToken)) {
-            throw new \Exception('API token is missing', 401);
-        }
 
         $sql = 'SELECT * FROM game WHERE api_token = :token';
         $rows = PdoSql::getInstance()->query($sql, [':token' => $request->bearerToken]);
@@ -32,6 +24,13 @@ abstract class AbstractApiController extends AbstractController
             throw new \Exception('Invalid API token', 401);
         }
 
-        parent::before($request, $response);
+        return parent::before($request, $response);
+    }
+
+    protected function after(DefaultRequest $request, DefaultResponse $response): DefaultResponse
+    {
+        $json = json_decode($response->getContent(), true);
+        $json['serverDate'] = (new \DateTime('now'))->format('Y-m-d H:i:s');
+        return $response->withJson($json);
     }
 }
