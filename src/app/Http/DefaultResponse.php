@@ -3,6 +3,7 @@
 /**
  * @see https://github.com/slimphp/Slim-Http/blob/master/src/Response.php
  */
+
 namespace App\Http;
 
 use InvalidArgumentException;
@@ -37,6 +38,7 @@ class DefaultResponse implements ResponseInterface
 
     /**
      * Disable magic setter to ensure immutability
+     *
      * @param mixed $name
      * @param mixed $value
      * @return void

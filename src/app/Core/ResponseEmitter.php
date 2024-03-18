@@ -1,7 +1,9 @@
 <?php
+
 /**
  * @see https://github.com/slimphp/Slim/blob/4.x/Slim/ResponseEmitter.php
  */
+
 namespace App\Core;
 
 use App\Http\DefaultResponse;

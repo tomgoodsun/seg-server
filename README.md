@@ -1,6 +1,25 @@
 # seg-server
 Super Easy Game Server
 
+## Test your scripts before you commit
+
+### PHPMD
+
+https://phpmd.org/
+
+```
+docker-compose exec php-app /var/www/src/phpmd.sh
+```
+
+### PHPCS
+
+https://github.com/squizlabs/PHP_CodeSniffer
+
+```
+docker-compose exec php-app /var/www/src/phpmc.sh
+```
+
+
 ---
 English
 

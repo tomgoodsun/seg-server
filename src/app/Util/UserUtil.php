@@ -4,6 +4,11 @@ namespace App\Util;
 
 class UserUtil
 {
+    /**
+     * Gernerate automatic nickname
+     *
+     * @return string
+     */
     public static function generateNicknema(): string
     {
         $nameList = [

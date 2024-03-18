@@ -1,4 +1,9 @@
 <?php
+
+/**
+ * App class
+ */
+
 namespace App\Core;
 
 use App\Http\Route;
@@ -10,7 +15,7 @@ class App
     /**
      * Condig instance
      *
-     * @var  Config
+     * @var Config
      */
     private $config;
 
@@ -48,7 +53,9 @@ class App
             $uri = $_SERVER['REQUEST_URI'];
             $route = Route::resolve($method, $uri);
 
-            /** @var ResponseInterface $response */
+            /**
+             * @var ResponseInterface $response
+             */
             $response = $route->dispatch();
             $responseEmitter = new ResponseEmitter();
             $responseEmitter->emit($response);

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Database;
 
 use PDO;
@@ -165,7 +166,10 @@ class PdoSql
             $offset = intval($page) <= 0 ? 0 : (intval($page) - 1) * intval($itemPerPage);
             $rowCount = intval($itemPerPage);
         }
-        return [$offset, $rowCount];
+        return [
+            $offset,
+            $rowCount
+        ];
     }
 
     /**

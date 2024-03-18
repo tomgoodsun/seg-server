@@ -163,7 +163,9 @@ class Route
             throw new \Exception("Method '{$handler[1]}' not found in '{$handler[0]}'");
         }
 
-        /** @var AbstractController $controller */
+        /**
+         * @var AbstractController $controller
+         */
         $controller = new $handler[0]($this->createRequest(), $this->createResponse());
         $method = $handler[1];
         return $controller->dispatch($method);
