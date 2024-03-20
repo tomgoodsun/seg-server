@@ -38,44 +38,8 @@ paths:
                     type: integer
                     format: number
                     example: 200
-                  method:
-                    type: string
-                    example: "POST"
-                  message:
-                    type: string
-                    example: "ユーザ登録に成功しました。"
-                  data:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                        example: 1
                 required:
-                  - statusCode
-                  - method
-                  - message
-                  - data
-        '409':
-          description: |
-            登録済みのメールアドレス
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  statusCode:
-                    type: integer
-                    format: number
-                    example: 409
-                  method:
-                    type: string
-                    example: "POST"
-                  message:
-                    type: string
-                    example: "登録済みのメールアドレスです。"
-                  data: 
-                    type: object
-                    example: null
+                  - status
         '500':
           $ref: '#/components/responses/500Error'
       security:
