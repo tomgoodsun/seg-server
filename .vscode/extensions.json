@@ -6,6 +6,7 @@
         "bmewburn.vscode-intelephense-client",
         "zobo.php-intellisense",
         "ms-azuretools.vscode-docker",
-        "formulahendry.docker-explorer"
+        "formulahendry.docker-explorer",
+        "zoellner.openapi-preview"
     ]
 }

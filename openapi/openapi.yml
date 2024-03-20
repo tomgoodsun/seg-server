@@ -1,0 +1,159 @@
+openapi: 3.0.0
+info:
+  version: 0.0.0
+  title: RESTful API
+  description: >-
+    SEG Server API
+servers:
+  - url: 'http://{host}:8081/api'
+    description: SEG Server Local
+    variables:
+      host:
+        default: localhost
+        enum:
+          - localhost
+paths:
+  /auth:
+    get:
+      tags:
+        - user
+      summary: Authorize user
+      description: |
+        Authenticate user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Client authorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    format: number
+                    example: 200
+                  method:
+                    type: string
+                    example: "POST"
+                  message:
+                    type: string
+                    example: "ユーザ登録に成功しました。"
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                required:
+                  - statusCode
+                  - method
+                  - message
+                  - data
+        '409':
+          description: |
+            登録済みのメールアドレス
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    format: number
+                    example: 409
+                  method:
+                    type: string
+                    example: "POST"
+                  message:
+                    type: string
+                    example: "登録済みのメールアドレスです。"
+                  data: 
+                    type: object
+                    example: null
+        '500':
+          $ref: '#/components/responses/500Error'
+      security:
+        - bearerAuth: []
+  /user:
+    post:
+      tags:
+        - user
+      summary: Register user
+      description: |
+        Register user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nickname:
+                  type: string
+                  example: 'Dolphin-0321'
+      responses:
+        '200':
+          description: Client authorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    format: number
+                    example: 200
+                  userId:
+                    type: integer
+                    format: number
+                    example: 1
+                  nickname:
+                    type: string
+                    example: 'Dolphin-0321'
+                  accessToken:
+                    type: string
+                    example: '9ee8239ea02102b61234deafe69a12a7'
+                  serverDate:
+                    type: string
+                    example: '2024-03-21 01:52:39'
+                required:
+                  - status
+                  - nickname
+                  - accessToken
+                  - serverDate
+        '500':
+          $ref: '#/components/responses/500Error'
+      security:
+        - bearerAuth: []
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      #bearerFormat: JWT
+  responses:
+    500Error:
+      description: |
+        Server Error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: integer
+                format: int64
+                example: '500'
+              #method:
+              #  type: string
+              #  example: 'POST'
+              message: 
+                type: string
+                example: 'Server Error'
