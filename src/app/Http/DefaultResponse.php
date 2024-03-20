@@ -489,6 +489,7 @@ class DefaultResponse implements ResponseInterface
     {
         $content = '';
         $body = $this->getBody();
+        $body->rewind();
         $amountToRead = (int) $this->getHeaderLine('Content-Length');
         if (0 === $amountToRead) {
             $amountToRead = $body->getSize();

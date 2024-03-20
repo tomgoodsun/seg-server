@@ -21,10 +21,10 @@ class Factory
      */
     public static function createDefaultRequest(): RequestInterface
     {
-        $method = $_SERVER['REQUEST_METHOD'];
-        $uri = new Uri('http', $_SERVER['HTTP_HOST'], null, $_SERVER['REQUEST_URI']);
-        $headers = new Headers($_SERVER);
-        $body = new Stream(fopen('php://input', 'r'));
+        $method = sgv()->server('REQUEST_METHOD');
+        $uri = new Uri('http', sgv()->server('HTTP_HOST'), null, sgv()->server('REQUEST_URI'));
+        $headers = new Headers(sgv()->server());
+        $body = new Stream(fopen('php://temp', 'rw+'));
         return new DefaultRequest($method, $uri, $headers, $_COOKIE, $_REQUEST, $body, $_FILES);
     }
 

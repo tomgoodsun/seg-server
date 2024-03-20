@@ -1,3 +1,6 @@
 src/vendor/
+src/storage/log/*
+src/storage/template_cache/*
 *.bak
 .env
+!.gitkeep

@@ -1,7 +1,8 @@
 <?php
 
 // @see https://www.php.net/manual/en/class.errorexception.php
-function exception_error_handler(int $errno, string $errstr, string $errfile = null, int $errline) {
+function exception_error_handler(int $errno, string $errstr, string $errfile = null, int $errline)
+{
     if (!(error_reporting() & $errno)) {
         // This error code is not included in error_reporting
         return;

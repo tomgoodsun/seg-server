@@ -10,5 +10,3 @@ try {
 } catch (\Throwable $e) {
     renderError($e);
 }
-
-//phpinfo();

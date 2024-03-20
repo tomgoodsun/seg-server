@@ -4,8 +4,8 @@ namespace App\Http;
 
 abstract class AbstractController
 {
-    private DefaultRequest $request;
-    private DefaultResponse $response;
+    protected DefaultRequest $request;
+    protected DefaultResponse $response;
 
     public function __construct(DefaultRequest $request, DefaultResponse $response)
     {
@@ -22,10 +22,13 @@ abstract class AbstractController
      */
     public function dispatch(string $action, array $params = []): mixed
     {
-        $response = $this->before($this->request, $this->response);
-        $response = call_user_func_array([$this, $action], [$this->request, $response, ...$params]);
-        $response = $this->after($this->request, $response);
-        return $response;
+        $this->response = $this->before($this->request, $this->response);
+        $this->response = call_user_func_array(
+            [$this, $action],
+            [$this->request, $this->response, ...$params]
+        );
+        $this->response = $this->after($this->request, $this->response);
+        return $this->response;
     }
 
     protected function before(DefaultRequest $request, DefaultResponse $response): DefaultResponse

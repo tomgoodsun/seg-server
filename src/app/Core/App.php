@@ -48,9 +48,8 @@ class App
     {
         try {
             // TODO: Set config to Route object
-            // TODO: Avoid using $_SERVER global variable as much as possible
-            $method = $_SERVER['REQUEST_METHOD'];
-            $uri = $_SERVER['REQUEST_URI'];
+            $method = sgv()->server('REQUEST_METHOD');
+            $uri = sgv()->server('REQUEST_URI');
             $route = Route::resolve($method, $uri);
 
             /**
@@ -60,6 +59,8 @@ class App
             $responseEmitter = new ResponseEmitter();
             $responseEmitter->emit($response);
         } catch (\Exception $e) {
+            // TODO: Log the exception
+            // TODO: Render a nice error page
             throw $e;
         }
     }
