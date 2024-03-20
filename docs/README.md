@@ -39,7 +39,8 @@ Super Easy Game Serverは演習用の簡易的なゲームサーバーです。
 - IDEs and Text Editors like the following
     - [PhpStrom](https://www.jetbrains.com/phpstorm/)
     - [Visual Studio Code](https://code.visualstudio.com/) (recommanded in some cases)
-    - [Gvim](https://www.vim.org/download.php), or your favorite)
+    - [Gvim](https://www.vim.org/download.php)
+    - Or your favorite
 - [MySQL Workbench](https://www.mysql.com/products/workbench/)
 - Web Browser
 - API testing tool, for example [Postman](https://www.postman.com/)
