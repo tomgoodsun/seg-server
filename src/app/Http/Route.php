@@ -281,6 +281,17 @@ class Route
     }
 
     /**
+     * Clean path, remove query string
+     *
+     * @param string $path
+     * @return string
+     */
+    final public static function cleanPath(string $path): string
+    {
+        return explode('?', $path)[0];
+    }
+
+    /**
      * Find route
      *
      * TODO: This is much better define Resolver class
@@ -291,6 +302,7 @@ class Route
      */
     final public static function resolve(string $method, string $path): Route
     {
+        $path = self::cleanPath($path);
         $method = strtolower($method);
         if (array_key_exists($method, static::$routes)
             && array_key_exists($path, static::$routes[$method])
