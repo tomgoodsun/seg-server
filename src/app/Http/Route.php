@@ -50,13 +50,6 @@ class Route
     private $name;
 
     /**
-     * Controller object
-     *
-     * @var AbstractController
-     */
-    private $controller;
-
-    /**
      * @var RoutingResolver
      */
     private $resolver;

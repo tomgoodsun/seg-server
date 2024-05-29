@@ -2,8 +2,8 @@
 
 namespace App\Http;
 
-use \Twig\Loader\FilesystemLoader;
-use \Twig\Environment;
+use Twig\Loader\FilesystemLoader;
+use Twig\Environment;
 
 abstract class AbstractPageController extends AbstractController
 {
@@ -29,7 +29,6 @@ abstract class AbstractPageController extends AbstractController
         return $this
             ->response
             ->write($html)
-            ->withHeader('Content-Type', 'text/html; charset=utf-8')
-        ;
+            ->withHeader('Content-Type', 'text/html; charset=utf-8');
     }
 }
